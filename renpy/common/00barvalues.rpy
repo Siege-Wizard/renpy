@@ -441,22 +441,28 @@ init -1500 python:
          The value of an audio mixer.
 
          `mixer`
-             The name of the mixer to adjust. This is usually one of
-             "music", "sfx", or "voice", but creators can create new
-             mixers.
+             Either a single string giving a mixer name, or a list of
+             strings giving a list of mixers t adjust. The strings
+             should be mixer names, usually "music", "sfx", or "voice",
+             but creators can create new mixers.
          """
 
         def __init__(self, mixer):
-            self.mixer = mixer
+            if isinstance(mixer, basestring):
+                mixer = [ mixer ]
+
+            self.mixers = mixer
 
         def set_mixer(self, value):
-            _preferences.set_volume(self.mixer, value)
+            for i in self.mixers:
+                _preferences.set_volume(i, value)
+
             renpy.restart_interaction()
 
         def get_adjustment(self):
             return ui.adjustment(
                 range=1.0,
-                value=_preferences.get_volume(self.mixer),
+                value=min(_preferences.get_volume(i) for i in self.mixers),
                 changed=self.set_mixer)
 
         def get_style(self):
