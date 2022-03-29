@@ -132,10 +132,11 @@ init -1500 python:
         """
         :doc: audio_action
 
-        Sets the volume of `mixer` to `value`.
+        Sets the volume of one or more mixers to `value`.
 
         `mixer`
-            The mixer to set the volume of. A string, usually one of
+            Either a single string giving a mixer name, or a list of strings
+            giving a list of mixers. The strings should be mixer names, usually
             "music", "sfx", or "voice".
         `value`
             The value to set the volume to. A number between 0.0 and 1.0,
@@ -143,15 +144,24 @@ init -1500 python:
         """
 
         def __init__(self, mixer, volume):
-            self.mixer = mixer
+            if isinstance(mixer, basestring):
+                mixer = [ mixer ]
+
+            self.mixers = mixer
             self.volume = volume
 
         def __call__(self):
-            _preferences.set_volume(self.mixer, self.volume)
+            for i in self.mixers:
+                _preferences.set_volume(i, self.volume)
+
             renpy.restart_interaction()
 
         def get_selected(self):
-            return _preferences.get_volume(self.mixer) == self.volume
+            for i in self.mixers:
+                if _preferences.get_volume(i) != self.volume:
+                    return False
+
+            return True
 
     @renpy.pure
     class SetMute(Action, DictEquality):
