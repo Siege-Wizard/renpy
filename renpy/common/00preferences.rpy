@@ -168,6 +168,7 @@ init -1500 python:
          * Preference("sound volume", 0.5) - Set the sound volume.
          * Preference("voice volume", 0.5) - Set the voice volume.
          * Preference("mixer <mixer> volume", 0.5) - Set the specified mixer volume.
+         * Preference("all volume", 0.5) - Set all the mixer volumes.
 
          * Preference("emphasize audio", "enable") - Emphasize the audio channels found in :var:`config.emphasize_audio_channels`.
          * Preference("emphasize audio", "disable") - Do not emphasize audio channels.
